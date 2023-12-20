@@ -1,0 +1,36 @@
+#ifndef _STA01_
+#define _STA01_
+
+// STA CORE
+#include "./core/periodic.h"
+#include "./core/functional.h"
+#include "./core/exception.h"
+#include "./core/cmath.h"
+#include "./core/iterator.h"
+#include "./core/memory.h"
+#include "./core/containers.h"
+#include "./core/coroutine.h"
+
+// STA COMPONENTS
+#include "./components/display.h"
+#include "./components/pins.h"
+#include "./components/advanced_components.h"
+#include "./components/basic_components.h"
+
+// STA TYPES
+#include "./types/fixed.h"
+#include "./types/callback.h"
+
+// CONTROL
+#include "./control/pid.h"
+#include "./control/pid_tuner.h"
+
+// FRAMEWORK
+#include "./framework/microcontroller.h"
+#include "./framework/entry_point.h"
+
+#include "log.h"
+#include "utility.h"
+#include "sta.h"
+
+#endif
