@@ -6,13 +6,13 @@
 using namespace sta::literals;
 using namespace sta::control;
 
-class Uno : public sta::micro_controller {
+class Controller : public sta::micro_controller {
 public:
-  Uno() : sserial(1, 0) {
+  Controller() : sserial(1, 0) {
     this->disp = sta::nextion_serial(sserial, 9600);
   }
 
-  Uno(const Uno&) = default;
+  Controller(const Controller&) = default;
 
 public:
   bool onInit() override {
@@ -22,14 +22,13 @@ public:
     return true;
   }
 
+  bool onLoop() override {
+
+    return true;
+  }
+
   bool onUpdate() override {
-    sta::safe_delay_point current;
-    if (sta::delta(current, previous) > 1000) {
-      this->updateDisplay(counterVar, 1);
-
-      this->previous = current;
-    }
-
+    this->updateDisplay(counterVar, 1);
     return true;
   }
 
@@ -48,6 +47,6 @@ private:
 };
 
 sta::micro_controller* sta::create_app() {
-  return new Uno();
+  return new Controller();
 }
 

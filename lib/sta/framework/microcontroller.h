@@ -18,13 +18,10 @@ public:
         return *this;
     }
 
-    // inline bool init() { return this->setup(); }
-    // inline bool loop() { return this->toUpdate(); }
-    // inline void after() { this->after(); sta::end(); }
-
 public:
-    virtual inline bool onInit() { return false; }
-    virtual inline bool onUpdate() { return false; }
+    virtual inline bool onInit() = 0;
+    virtual inline bool onLoop() = 0;
+    virtual inline bool onUpdate() { return false; };
     virtual inline void onEnd();
 };
 
