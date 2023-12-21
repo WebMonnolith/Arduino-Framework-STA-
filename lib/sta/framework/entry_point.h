@@ -22,6 +22,8 @@ void setup() {
     app.reset(sta::create_app());
     while(!app->onInit());
     sta::begin(9600);
+    loop_interval = sta::set_interval();
+
 }
 
 void loop() {
@@ -32,7 +34,6 @@ void loop() {
     if (breakLoop)
         app->onEnd();
 
-    loop_interval = sta::set_interval();
     sta::safe_delay_point current;
     if (sta::delta(current, previous) > loop_interval) {
         app->onUpdate();
