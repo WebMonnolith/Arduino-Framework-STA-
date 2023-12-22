@@ -384,8 +384,8 @@ ref_ptr<T> make_ref(Args... args) {
 template <class T>
 using shared_ptr = ref_ptr<T>;
 
-template < class T, typename ... Args>
-using make_shared = make_ref<T, Args>;
+// template < class T, typename ... Args>
+// using make_shared = make_ref<T, Args>;
 
 #pragma GCC diagnostic pop
 
