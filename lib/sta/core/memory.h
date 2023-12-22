@@ -36,9 +36,22 @@ auto clear = function<void(void*)> {
 	}
 };
 
+
+template <class T> _STAXXEXPORT 
+pair<T*, ptrdiff_t> get_temporary_buffer(ptrdiff_t n);
+
+template <class T> 
+_STAXXEXPORT void return_temporary_buffer(T* p);
+
 template <class T> class allocator;
 // Specialize for void:
 
+/**
+ * @brief Specialization of the allocator class for void type.
+ * 
+ * This class template represents an allocator specifically designed for 
+ * allocating memory for void type.
+ */
 template <> 
 class _STAXXEXPORT allocator<void> {
 public:
@@ -48,6 +61,13 @@ public:
 	template <class U> struct rebind { typedef allocator<U> other; };
 };
 
+/**
+ * @brief Generic allocator class template.
+ * 
+ * This class template represents a generic allocator that can allocate 
+ * memory for any specified type T.
+ * @tparam T The type for which memory is to be allocated.
+ */
 template <class T> 
 class _STAXXEXPORT allocator {
 public:
@@ -84,6 +104,14 @@ public:
 	template<class U> struct rebind { typedef allocator<U> other; };
 };
 
+/**
+ * @brief Raw storage iterator class template.
+ * 
+ * This class template represents an iterator that provides a way to iterate 
+ * over uninitialized memory and store values of type T.
+ * @tparam Out Output iterator type.
+ * @tparam T   Type of elements the iterator can store.
+ */
 template <class Out, class T> 
 class _STAXXEXPORT raw_storage_iterator
 	: public iterator<output_iterator_tag, void, void, void, void>
@@ -107,40 +135,86 @@ public:
 	}
 };
 
-template <class T> _STAXXEXPORT 
-pair<T*, ptrdiff_t> get_temporary_buffer(ptrdiff_t n) {
-	pair<T*, ptrdiff_t> retval;
-	retval.first = static_cast<T*>(allocate(n * sizeof(T)));
-	if (retval.first == 0) 
-		retval.second = 0;
-	else 
-		retval.second = n;
-	
-	return retval;
-}
-
+/**
+ * @brief smart_ptr Interface
+ * 
+ * This interface defines the basic methods required for a smart pointer.
+ * It serves as a blueprint for implementing custom smart pointer classes.
+ * 
+ * @tparam T Type of the managed object.
+ */
 template <class T> 
-_STAXXEXPORT void return_temporary_buffer(T* p) {
-	clear(p);
-}
+class _STAXXEXPORT smart_ptr {
+public:
+    /**
+     * @brief Virtual destructor.
+     * 
+     * Ensures proper destruction of derived classes.
+     */
+    virtual ~smart_ptr() = default;
+protected:
+    /**
+     * @brief Set the internal pointer to the given raw pointer.
+     * 
+     * This method assigns the managed pointer to the provided raw pointer.
+     * 
+     * @param _ptr Pointer to assign internally.
+     */
+    virtual inline void _unsafe_set(T* _ptr) = 0;
 
-/*
-This class template provides a limited garbage collection facility for pointers, 
-by allowing pointers to have the elements they point to automatically destroyed when the auto_ptr object is itself destroyed.
+    /**
+     * @brief Retrieve the internal raw pointer.
+     * 
+     * This method returns the raw pointer managed by the smart pointer.
+     * 
+     * @return T* Raw pointer managed by the smart pointer.
+     */
+    virtual inline T* _unsafe_get() const = 0;
 
-auto_ptr objects have the peculiarity of taking ownership of the pointers assigned to them:
-An auto_ptr object that has ownership over one element is in charge of destroying the element 
-it points to and to deallocate the memory allocated to it when itself is destroyed. The destructor does this by calling operator delete automatically.
+    /**
+     * @brief Release ownership of the managed pointer.
+     * 
+     * This method releases the ownership of the managed pointer and returns it.
+     * After releasing ownership, the smart pointer no longer manages the object.
+     * 
+     * @return T* Released raw pointer.
+     */
+    virtual T* release() = 0;
 
-Therefore, no two auto_ptr objects should own the same element,
-since both would try to destruct them at some point.
-When an assignment operation takes place between two auto_ptr objects,
-ownership is transferred, which means that the object losing ownership is set to no longer point to the element (it is set to the null pointer).
-*/
-template <class T> 
-class 
+    /**
+     * @brief Reset the managed pointer to a new pointer or nullptr.
+     * 
+     * This method changes the managed pointer to a new pointer or nullptr,
+     * optionally deallocating the previously managed object.
+     * 
+     * @param p New pointer to manage (default: nullptr).
+     */
+    virtual void reset(T* p = nullptr) = 0;
+
+    // Add any additional virtual methods or functionalities if needed
+    // virtual T& operator*() = 0;
+    // virtual T* operator->() = 0;
+};
+
+/**
+ * @brief This class template offers a basic garbage collection mechanism for pointers.
+ *
+ * The auto_ptr template class manages pointers, ensuring that the elements they point to are automatically
+ * destroyed when the auto_ptr object itself is destroyed.
+ *
+ * auto_ptr objects have the distinctive feature of assuming ownership of the pointers assigned to them:
+ * When an auto_ptr object takes ownership of an element, it becomes responsible for destroying the pointed-to element
+ * and deallocating the memory allocated to it upon its own destruction. This destruction occurs automatically via the destructor
+ * by invoking the operator delete.
+ *
+ * Consequently, it is important to ensure that no two auto_ptr objects possess ownership of the same element,
+ * as both would attempt to destruct it at some point. During an assignment operation between two auto_ptr objects,
+ * ownership is transferred. The object losing ownership ceases to point to the element and is set to the null pointer.
+ * @tparam T Type of the managed object.
+ */
+template <class T>  
 [[deprecated("This class template is deprecated. unique_ptr is a new facility with a similar functionality, but with improved security (no fake copy assignments), added features (deleters) and support for arrays.")]]
-_STAXXEXPORT auto_ptr {
+class _STAXXEXPORT auto_ptr : public smart_ptr<T> {
 public:
 	typedef T element_type;
 private:
@@ -163,21 +237,21 @@ public:
 	}
 public:
 
-	inline void _unsafe_set(T* _ptr) {
+	inline void _unsafe_set(T* _ptr) override {
 		this->object = _ptr;
 	}
 
-	inline T* _unsafe_get() const _STAXX_USE_NOEXCEPT {
+	inline T* _unsafe_get() const override {
 		return object;
 	}
 
-	T* release() _STAXX_USE_NOEXCEPT {
+	T* release() override {
 		T* temp(object);
 		object = 0;
 		return temp;
 	}
 
-	void reset(T* p = 0) _STAXX_USE_NOEXCEPT {
+	void reset(T* p = 0) override {
 		if (p != object) {
 			delete object;
 			object = p;
@@ -237,20 +311,17 @@ auto_ptr<T> make_auto(Args... args) {
 	return auto_ptr<T>(new T(args...));
 }
 
-/*
-These objects have the ability of taking ownership of a pointer:
- once they take ownership they manage the pointed object by becoming responsible for its deletion at some point.
-
-unique_ptr objects automatically delete the object they manage (using a deleter) as soon as they themselves are destroyed,
-or as soon as their value changes either by an assignment operation or by an explicit call to unique_ptr::reset.
-
-unique_ptr objects own their pointer uniquely: no other facility shall take care of deleting the object,
-and thus no other managed pointer should point to its managed object, since as soon as they have to,
-unique_ptr objects delete their managed object without taking into account whether other pointers still point to the same object or not,
-and thus leaving any other pointers that point there as pointing to an invalid location.
-*/
+/**
+ * @brief Manages a pointer and its associated resource with unique ownership.
+ * 
+ * unique_ptr manages a pointer to a dynamically allocated object, ensuring that the object is 
+ * deleted when the unique_ptr goes out of scope or is reset. It follows the RAII (Resource Acquisition Is Initialization) principle,
+ * providing a safe and efficient way to handle dynamically allocated memory.
+ * 
+ * @tparam T Type of the managed object.
+ */
 template<typename T> 
-class _STAXXEXPORT unique_ptr {
+class _STAXXEXPORT unique_ptr : public smart_ptr<T> {
 public: // CON-/DESTRUCTORS
 	unique_ptr() _STAXX_USE_NOEXCEPT : unique_ptr(nullptr) {}
 	unique_ptr(T* t) _STAXX_USE_NOEXCEPT : _ptr(t) {}
@@ -270,21 +341,21 @@ public: // CON-/DESTRUCTORS
 	}
 public:
 
-	inline void _unsafe_set(T* _ptr) {
+	inline void _unsafe_set(T* _ptr) override {
 		this->_ptr = _ptr;
 	}
 
-	inline T* _unsafe_get() const {
+	inline T* _unsafe_get() const override {
 		return _ptr;
 	}
 
-	T* release() _STAXX_USE_NOEXCEPT {
+	T* release() override {
 		T* temp(_ptr);
 		_ptr = 0;
 		return temp;
 	}
 
-	void reset(T* p = 0) _STAXX_USE_NOEXCEPT {
+	void reset(T* p = 0) override {
 		if (p != _ptr) {
 			delete _ptr;
 			_ptr = p;
@@ -327,9 +398,17 @@ unique_ptr<T> make_unique(Args... args) {
 	return unique_ptr<T>(new T(args...));
 }
 
-// Non owning reference
+/**
+ * @class ref_ptr
+ * @brief A smart pointer class similar to std::shared_ptr that manages a pointer while tracking references.
+ *
+ * This class helps in automatic memory management by keeping track of the number of references to a dynamically allocated object.
+ * It uses reference counting to ensure that the object is deallocated when the last reference to it is destroyed.
+ *
+ * @tparam T The type of the managed object.
+ */
 template <class T> 
-class _STAXXEXPORT ref_ptr {
+class _STAXXEXPORT ref_ptr : public smart_ptr<T> {
 public: // CON-/DESTRUCTORS
 	ref_ptr() : _ref(nullptr) {}
 	ref_ptr(T* ref) : _ref(ref) {}
@@ -340,21 +419,21 @@ public: // CON-/DESTRUCTORS
 	ref_ptr(ref_ptr<BaseClass>& other) : _ref((T*) *other) {}
 public: // HELPER FUNCTIONS
 
-	inline void _unsafe_set(T* _ptr) {
+	inline void _unsafe_set(T* _ptr) override {
 		this->_ref = _ptr;
 	}
 
-	inline T* _unsafe_get() const {
+	inline T* _unsafe_get() const override {
 		return _ref;
 	}
 
-	T* release() _STAXX_USE_NOEXCEPT {
+	T* release() override {
 		T* temp(_ref);
 		_ref = 0;
 		return _ref;
 	}
 
-	void reset(T* p = 0) _STAXX_USE_NOEXCEPT {
+	void reset(T* p = 0) override {
 		if (p != _ref) {
 			delete _ref;
 			_ref = p;
@@ -383,6 +462,37 @@ ref_ptr<T> make_ref(Args... args) {
 
 template <class T>
 using shared_ptr = ref_ptr<T>;
+
+/**
+ * @brief Allocates temporary buffer memory for elements of type T.
+ * 
+ * @tparam T Type of elements in the buffer.
+ * @param n Number of elements to allocate space for.
+ * @return A pair containing a pointer to the allocated memory block and the size allocated.
+ *         If allocation fails, the pointer in the pair will be null and size will be 0.
+ */
+template <class T> _STAXXEXPORT 
+pair<T*, ptrdiff_t> get_temporary_buffer(ptrdiff_t n) {
+	pair<T*, ptrdiff_t> retval;
+	retval.first = static_cast<T*>(allocate(n * sizeof(T)));
+	if (retval.first == 0) 
+		retval.second = 0;
+	else 
+		retval.second = n;
+	
+	return retval;
+}
+
+/**
+ * @brief Clears and releases a temporary buffer allocated by get_temporary_buffer.
+ * 
+ * @tparam T Type of elements in the buffer.
+ * @param p Pointer to the buffer to be cleared and deallocated.
+ */
+template <class T> 
+_STAXXEXPORT void return_temporary_buffer(T* p) {
+	clear(p);
+}
 
 #pragma GCC diagnostic pop
 
