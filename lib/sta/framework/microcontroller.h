@@ -22,7 +22,7 @@ public:
     virtual inline bool onInit() = 0;
     virtual inline bool onLoop() = 0;
     virtual inline bool onUpdate() { return false; };
-    virtual inline void onEnd();
+    virtual inline void onEnd() {}
 };
 
 

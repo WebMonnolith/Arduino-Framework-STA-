@@ -5,6 +5,7 @@
 #include "sta.h"
 #include "microcontroller.h"
 #include "./core/memory.h"
+#include "./core/exception.h"
 
 using namespace sta::literals;
 
@@ -19,11 +20,11 @@ static sta::unique_ptr<sta::micro_controller> app;
 static bool breakLoop = false;
 
 void setup() {
+    sta::set_terminate (sta::__gnu_cxx::__verbose_terminate_handler);
     app.reset(sta::create_app());
     while(!app->onInit());
     sta::begin(9600);
     loop_interval = sta::set_interval();
-
 }
 
 void loop() {

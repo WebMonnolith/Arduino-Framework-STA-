@@ -135,7 +135,7 @@ inline sta::f64 pow(sta::f64 x, sta::int32 y) {
 	return pow((sta::f64)x, (sta::f64)y);
 }
 
-# ifdef __UCLIBCXX_HAS_LONG_DOUBLE__
+# ifdef __STALIBCXX_HAS_LONG_DOUBLE__
 inline sta::f128 abs(sta::f128 x) {
 	return fabsl(x);
 }
@@ -208,8 +208,8 @@ inline sta::f128 tan(sta::f128 x) {
 inline sta::f128 tanh(sta::f128 x) {
 	return tanhl(x);
 }
-# endif	//	 __UCLIBCXX_HAS_LONG_DOUBLE__
-#endif	//	 __CORRECT_ISO_CPP_MATH_H_PROTO
+# endif	
+#endif
 
 END_NP_BLOCK
 

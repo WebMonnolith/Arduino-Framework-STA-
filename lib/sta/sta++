@@ -10,6 +10,7 @@
 #include "./core/memory.h"
 #include "./core/containers.h"
 #include "./core/coroutine.h"
+#include "./core/semantics.h"
 
 // STA COMPONENTS
 #include "./components/display.h"
