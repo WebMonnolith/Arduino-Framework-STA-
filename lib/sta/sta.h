@@ -1,6 +1,13 @@
 #ifndef _STANDARD_ARDUINO_
 #define _STANDARD_ARDUINO_
 
+#define __STA_MAJOR__		0.1
+#define __STA_MINOR__		0.0
+#define __STA_PATCH__		0.0
+#define __STA_REVISION__	0.0
+#define __STA_VERSION__		0.1
+#define __STA_MESSAGE__		"STA: V0.1"
+
 #include <Arduino.h>
 
 // Architecture specific include
