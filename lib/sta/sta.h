@@ -3,6 +3,13 @@
 
 #include <Arduino.h>
 
+#define __STA_MAJOR__		1.0
+#define __STA_MINOR__		0.1
+#define __STA_PATCH__		0.1
+#define __STA_REVISION__	0.0
+#define __STA_VERSION__		1.0
+#define __STA_MESSAGE__		"STA: V1.0"
+
 // Architecture specific include
 #define ARCH_AVR			0x0001
 #define ARCH_SAM			0x0002

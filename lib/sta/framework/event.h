@@ -7,14 +7,6 @@
 #define STA_BIT(x) 						(1 << (x))
 #define STA_LSB(x)						((x) ^ ((x) - 1) & (x))
 
-// Macros for simplifying the abstract method implementations
-
-#define STA_EVENT_CLASS_TYPE(type)  static sta::event_type getStaticType() { return sta::##type; }\
-									virtual sta::event_type getevent_type() const override { return getStaticType(); }\
-									virtual const char* getName() const override { return #type; }
-
-#define STA_EVENT_CLASS_CATEGORY(category) virtual sta::int32 getCategoryFlags() const override {return category;}
-
 BEGIN_NP_BLOCK
 
 _STAXXEXPORT enum class event_type {
@@ -31,6 +23,13 @@ _STAXXEXPORT enum event_category {
 	eventCategoryServer 			= STA_BIT(2),
 };
 
+// Macros for simplifying the abstract method implementations
+
+#define STA_EVENT_CLASS_TYPE(type)  static sta::event_type getStaticType() { return event_type::type; }\
+									virtual sta::event_type getEventType() const override { return getStaticType(); }\
+									virtual const char* getName() const override { return #type; }
+
+#define STA_EVENT_CLASS_CATEGORY(category) virtual sta::int32 getCategoryFlags() const override {return category;}
 
 class _STAXXEXPORT event {
 private:
@@ -43,7 +42,7 @@ public:
 
 	virtual ~event() = default;
 
-	virtual event_type getevent_type() const = 0;
+	virtual event_type getEventType() const = 0;
 	virtual const char* getName() const = 0;
 	virtual int32 getCategoryFlags() const = 0;
 	virtual String toString() const { return String(this->getName()); } // DEBUG only
@@ -66,8 +65,8 @@ public:
 
 	template <typename T>
 	int32 dispatch(eventFn<T> func) {
-		if (this->event.getevent_type() == T::getStaticType()) {
-			this->event.handled = func(*(T*)&this->event);
+		if (this->e.getEventType() == T::getStaticType()) {
+			this->e.handled = func(*(T*)&this->e);
 			return 1;
 		}
 		return 1;
@@ -80,7 +79,7 @@ public:
 		: ex(e) 
 	{}
 public:
-	STA_EVENT_CLASS_TYPE(event_type::appException)
+	STA_EVENT_CLASS_TYPE(appException)
 	STA_EVENT_CLASS_CATEGORY(event_category::eventCategoryException)
 private:
 	exception ex;
@@ -92,7 +91,7 @@ public:
 		: value(value) 
 	{}
 public:
-	STA_EVENT_CLASS_TYPE(event_type::appUpdate)
+	STA_EVENT_CLASS_TYPE(appUpdate)
 	STA_EVENT_CLASS_CATEGORY(event_category::eventCategoryInput)
 private:
 	int32 value;
@@ -103,7 +102,7 @@ public:
 	server_event()
 	{}
 public:
-	STA_EVENT_CLASS_TYPE(event_type::serverStatus)
+	STA_EVENT_CLASS_TYPE(serverStatus)
 	STA_EVENT_CLASS_CATEGORY(event_category::eventCategoryServer)
 private:
 };

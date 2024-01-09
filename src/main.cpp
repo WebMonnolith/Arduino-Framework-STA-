@@ -32,6 +32,10 @@ public:
     return true;
   }
 
+  void onEnd() override {
+    
+  }
+
 private:
   void updateDisplay(int& counter, int delayTime) {
     this->disp.setComponentText("t0", String(counter));

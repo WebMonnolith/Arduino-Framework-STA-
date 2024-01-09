@@ -3,6 +3,8 @@
 
 #include "sta.h"
 
+#pragma GCC visibility push(default)
+
 BEGIN_NP_BLOCK
 
 class _STAXXEXPORT micro_controller {
@@ -21,8 +23,8 @@ public:
 public:
     virtual inline bool onInit() = 0;
     virtual inline bool onLoop() = 0;
-    virtual inline bool onUpdate() { return false; };
-    virtual inline void onEnd();
+    virtual inline bool onUpdate() { return false; }
+    virtual inline void onEnd() {}
 };
 
 
