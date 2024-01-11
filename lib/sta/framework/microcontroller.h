@@ -18,11 +18,17 @@ public:
         return *this;
     }
 
+    inline int32 interval() const {
+        return this->onUpdateInterval;
+    }
+
 public:
     virtual inline bool onInit() = 0;
     virtual inline bool onLoop() = 0;
     virtual inline bool onUpdate() { return false; };
     virtual inline void onEnd() {}
+protected:
+    int32 onUpdateInterval = 1000;
 };
 
 

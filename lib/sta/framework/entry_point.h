@@ -11,7 +11,6 @@ using namespace sta::literals;
 
 BEGIN_NP_BLOCK
 extern sta::micro_controller* create_app();
-extern sta::int32 set_interval(); 
 END_NP_BLOCK
 
 static sta::int32 loop_interval = 1000;
@@ -24,7 +23,7 @@ void setup() {
     app.reset(sta::create_app());
     while(!app->onInit());
     sta::begin(9600);
-    loop_interval = sta::set_interval();
+    loop_interval = app->interval();
 }
 
 void loop() {
