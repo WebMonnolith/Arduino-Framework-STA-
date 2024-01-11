@@ -54,7 +54,3 @@ sta::micro_controller* sta::create_app() {
   return new Controller();
 }
 
-int sta::set_interval() {
-  return 10000;
-}
-
