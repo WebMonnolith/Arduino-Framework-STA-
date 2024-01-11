@@ -3,6 +3,8 @@
 
 #include "sta.h"
 
+#pragma GCC visibility push(default)
+
 BEGIN_NP_BLOCK
 
 class _STAXXEXPORT micro_controller {
