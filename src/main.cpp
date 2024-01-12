@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include <SoftwareSerial.h>
 
-#include <sta++>
+#include <sta.h>
 
 using namespace sta::literals;
 using namespace sta::control;

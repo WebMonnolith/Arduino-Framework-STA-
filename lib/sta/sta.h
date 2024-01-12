@@ -1,13 +1,6 @@
 #ifndef _STANDARD_ARDUINO_
 #define _STANDARD_ARDUINO_
 
-#define __STA_MAJOR__		0.1
-#define __STA_MINOR__		0.0
-#define __STA_PATCH__		0.0
-#define __STA_REVISION__	0.0
-#define __STA_VERSION__		0.1
-#define __STA_MESSAGE__		"STA: V0.1"
-
 #include <Arduino.h>
 
 #define __STA_MAJOR__		1.0
@@ -96,5 +89,38 @@ void	pin_write(byte pin, bool level) _STAXX_NOEXCEPT { digitalWrite(pin, level);
 int32   pin_read(byte pin) _STAXX_NOEXCEPT { return digitalRead(pin); }
 
 END_NP_BLOCK
+
+// STA CORE
+#include "./core/periodic.h"
+#include "./core/functional.h"
+#include "./core/exception.h"
+#include "./core/cmath.h"
+#include "./core/iterator.h"
+#include "./core/memory.h"
+#include "./core/containers.h"
+#include "./core/coroutine.h"
+#include "./core/semantics.h"
+
+// STA COMPONENTS
+#include "./components/display.h"
+#include "./components/pins.h"
+#include "./components/advanced_components.h"
+#include "./components/basic_components.h"
+
+// STA TYPES
+#include "./types/fixed.h"
+#include "./types/callback.h"
+
+// CONTROL
+#include "./control/pid.h"
+#include "./control/pid_tuner.h"
+
+// FRAMEWORK
+#include "./framework/microcontroller.h"
+#include "./framework/entry_point.h"
+#include "./framework/event.h"
+
+#include "log.h"
+#include "utility.h"
 
 #endif
