@@ -124,6 +124,7 @@ END_NP_BLOCK
 #include "./framework/microcontroller.h"
 #include "./framework/entry_point.h"
 #include "./framework/event.h"
+#include "./framework/http.h"
 
 #include "log.h"
 #include "utility.h"

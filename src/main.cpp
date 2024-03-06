@@ -9,7 +9,7 @@ using namespace sta::control;
 class Controller : public sta::micro_controller {
 public:
   Controller() {
-    sta::logln(baudrate());
+    sta::request<int> req = sta::post_request<int>();
   }
 
   Controller(const Controller&) = default;
