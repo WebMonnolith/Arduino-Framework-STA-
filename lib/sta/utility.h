@@ -67,16 +67,21 @@ void begin(uint32 baudrate)
 _STAXX_USE_NOEXCEPT {
 #if defined(UBRRH) || defined(UBRR0H)
 	Serial.begin(baudrate);
+	return;
 #endif
 #if defined(UBRR1H)
 	Serial1.begin(baudrate);
+	return;
 #endif
 #if defined(UBRR2H)
 	Serial2.begin(baudrate);
+	return;
 #endif
 #if defined(UBRR3H)
 	Serial3.begin(baudrate);
+	return;
 #endif
+	Serial.begin(baudrate);
 }
 
 inline _STAXXEXPORT 

@@ -3,6 +3,8 @@
 
 #include "sta.h"
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-function"
 #pragma GCC visibility push(default)
 
 BEGIN_NP_BLOCK
@@ -24,6 +26,10 @@ public:
         return this->onUpdateInterval;
     }
 
+    inline int32 baudrate() const {
+        return this->beginBaudrate;
+    }
+
 public:
     virtual inline bool onInit() = 0;
     virtual inline bool onLoop() = 0;
@@ -31,9 +37,11 @@ public:
     virtual inline void onEnd() {}
 protected:
     int32 onUpdateInterval = 1000;
+    int32 beginBaudrate = 9600;
 };
 
 
 END_NP_BLOCK
 
+#pragma GCC diagnostic pop
 #endif

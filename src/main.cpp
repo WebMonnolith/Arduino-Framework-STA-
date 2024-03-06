@@ -1,13 +1,15 @@
 #include <Arduino.h>
 #include <sta.h>
 
+#include <HTTPClient.h>
+
 using namespace sta::literals;
 using namespace sta::control;
 
 class Controller : public sta::micro_controller {
 public:
   Controller() {
-
+    sta::logln(baudrate());
   }
 
   Controller(const Controller&) = default;
@@ -15,7 +17,7 @@ public:
 public:
   bool onInit() override {
     sta::pin_mode(LED_BUILTIN, OUTPUT);
-
+    
     return true;
   }
 

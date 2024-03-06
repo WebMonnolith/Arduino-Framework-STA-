@@ -22,7 +22,7 @@ void setup() {
     // sta::set_terminate (sta::__gnu_cxx::__verbose_terminate_handler);
     app.reset(sta::create_app());
     while(!app->onInit());
-    sta::begin(9600);
+    sta::begin(app->baudrate());
     loop_interval = app->interval();
 }
 

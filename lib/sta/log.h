@@ -9,7 +9,7 @@ BEGIN_NP_BLOCK
     Logs objects to the arduino console.
 */
 template <typename T> 
-void log(T t) _STAXX_NOEXCEPT {
+void logln(T t) _STAXX_NOEXCEPT {
     Serial.println(t);
 }
 
@@ -19,7 +19,6 @@ void log(T t) _STAXX_NOEXCEPT {
 template<typename T, typename... Args> 
 void log(T t, Args... args) _STAXX_NOEXCEPT {
     Serial.print(t);
-
     log(args...);
 }
 
@@ -27,7 +26,7 @@ void log(T t, Args... args) _STAXX_NOEXCEPT {
     Logs objects to the arduino console.
 */
 template <typename T> 
-void logs(T t) _STAXX_NOEXCEPT {
+void logsln(T t) _STAXX_NOEXCEPT {
     Serial.println(t);
 }
 
