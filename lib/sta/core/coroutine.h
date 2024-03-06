@@ -196,6 +196,8 @@
   - Compatibility change with sta
 */
 
+#if ARDUINO_ARCH != ARCH_ESP32
+
 #ifndef COROUTINES_H
 #define COROUTINES_H
 
@@ -449,8 +451,9 @@ public:
                 return coroutine;
             }
 
-        // out of coroutines!
+#if ARDUINO_ARCH != ARCH_ESP32
         assert(false, P("Out of allocated coroutines!"));
+#endif
         abort(); // to avoid compile warning
     }
 
@@ -467,7 +470,9 @@ public:
                 if (b == N) b = 0;
             }
 
+#if ARDUINO_ARCH != ARCH_ESP32
             assert(b >= N, P("Couldn't find active coroutine!"));
+#endif
 
             coroutine_impl& coroutine = coroutines[b];
             bool result = coroutine.update(millis);
@@ -496,4 +501,5 @@ public:
 
 END_NP_BLOCK
 
+#endif
 #endif

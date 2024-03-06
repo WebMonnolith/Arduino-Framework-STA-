@@ -25,6 +25,7 @@
  **********************************************************************************
  */
 
+
 #ifndef _STA_DISPLAY_
 #define _STA_DISPLAY_
 
@@ -32,6 +33,7 @@
 #include "sta.h"
 #include "utility.h"
 
+#if ARDUINO_ARCH != ARCH_ESP32
 
 BEGIN_NP_BLOCK
 
@@ -104,6 +106,9 @@ private:
 #endif
 };
 #endif
+#endif
+
+#if ARDUINO_ARCH != ARCH_ESP32
 
 /* Implementations */
 
@@ -328,7 +333,4 @@ void nextion_serial::flushSerial(){
  
 END_NP_BLOCK
 
-
-
-
-
+#endif

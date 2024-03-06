@@ -53,6 +53,7 @@ using ::sqrt;
 using ::tan;
 using ::tanh;
 
+#if ARDUINO_ARCH != ESP_ARCH
 #ifndef __CORRECT_ISO_CPP_MATH_H_PROTO
 inline sta::f32 abs(sta::f32 x) {
 	return fabsf(x);
@@ -209,6 +210,7 @@ inline sta::f128 tanh(sta::f128 x) {
 	return tanhl(x);
 }
 # endif	
+#endif
 #endif
 
 END_NP_BLOCK

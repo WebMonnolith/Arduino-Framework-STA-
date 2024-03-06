@@ -33,8 +33,10 @@
 # define ARDUINO_ARCH ARCH_MEGAAVR
 #elif defined(ARDUINO_ARCH_MBED)
 # define ARDUINO_ARCH ARCH_MBED
+#elif defined(ARDUINO_ARCH_ESP32)
+# define ARDUINO_ARCH ARCH_ESP32
 #else
-#error "This library only supports boards with an AVR, SAM, SAMD, NRF52 or STM32F4 processor."
+# error "This library only supports boards with an AVR, SAM, SAMD, NRF52, esp32 or STM32F4 processor."
 #endif
 
 #define BEGIN_NP_BLOCK namespace sta {
@@ -102,7 +104,10 @@ END_NP_BLOCK
 #include "./core/semantics.h"
 
 // STA COMPONENTS
+#if ARDUINO_ARCH != ARCH_ESP32
 #include "./components/display.h"
+#endif
+
 #include "./components/pins.h"
 #include "./components/advanced_components.h"
 #include "./components/basic_components.h"
