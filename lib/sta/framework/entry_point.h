@@ -19,7 +19,7 @@ static sta::unique_ptr<sta::micro_controller> app;
 static bool breakLoop = false;
 
 void setup() {
-    sta::set_terminate (sta::__gnu_cxx::__verbose_terminate_handler);
+    // sta::set_terminate (sta::__gnu_cxx::__verbose_terminate_handler);
     app.reset(sta::create_app());
     while(!app->onInit());
     sta::begin(9600);
